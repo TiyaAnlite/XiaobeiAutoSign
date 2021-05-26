@@ -10,7 +10,7 @@
 2.安装Python库依赖
 
 ```
-pip -m pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 或者

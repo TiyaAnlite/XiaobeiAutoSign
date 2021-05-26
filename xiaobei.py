@@ -85,23 +85,23 @@ def do_sign(token: str, locat_data: dict, force_sign: bool = False, disable_noti
     check_list = requests.get(f"{BASE_URL}/student/health/list?{query_str}", headers=header).json()
     print(f"Month[{now_date.year}-{now_date.month}]: {len(check_list['rows'])} record(s)")
     last_log_time = time.strptime(check_list["rows"][-1]["createTime"], "%Y-%m-%d %H:%M:%S")
-    if last_log_time.tm_mday == now_date.day:
+    # last_log_time = time.localtime()
+    if force_sign:
+        print("FORCE SIGN enabled")
+    if last_log_time.tm_mday == now_date.day and not force_sign:
         print(f"Warning: Signed in today({check_list['rows'][-1]['createTime']})")
-        if force_sign:
-            print("FORCE SIGN enabled")
+        if disable_notice:
+            print(">>>The operation was cancelled<<<")
+            return
         else:
-            if disable_notice:
-                print(">>>The operation was cancelled<<<")
-                return
-            else:
-                while True:
-                    i = input("Will force sign, continue?(y/N)>>> ")
-                    if i.lower() == "y":
-                        print("FORCE SIGN enabled by user")
-                        break
-                    elif i.lower() == "n":
-                        print(">>>The operation was cancelled by user<<<")
-                        return
+            while True:
+                i = input("Will force sign, continue?(y/N)>>> ")
+                if i.lower() == "y":
+                    print("FORCE SIGN enabled by user")
+                    break
+                elif i.lower() == "n":
+                    print(">>>The operation was cancelled by user<<<")
+                    return
     locat = generate_location(locat_data)
     temperature = str(random.randint(364, 368) / 10)
     sign_data = {
